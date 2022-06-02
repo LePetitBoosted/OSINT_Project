@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 2158.291, g: 2260.5625, b: 3293.2266, a: 1}
+  m_IndirectSpecularColor: {r: 2158.248, g: 2260.4297, b: 3293.2695, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1809,9 +1809,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dialogue:
     name: ???
-    sentences:
-    - Where do you think you are going?
-    - You can't pass if you're not on the list.
+    lines: []
 --- !u!114 &1294277280
 MonoBehaviour:
   m_ObjectHideFlags: 0

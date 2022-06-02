@@ -50,9 +50,9 @@ public class DialogueManager : MonoBehaviour
 
 		sentences.Clear();
 
-		foreach (string sentence in dialogue.sentences)
+		foreach (Dialogue.Line line in dialogue.lines)
 		{
-			sentences.Enqueue(sentence);
+			sentences.Enqueue(line.sentence);
 		}
 
 		DisplayNextSentence();
