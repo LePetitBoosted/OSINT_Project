@@ -9,7 +9,7 @@ public class Dialogue
 	public string name;
 
 	[System.Serializable]
-	public struct Line 
+	public class Line 
 	{
 		public enum TypeOfLine { Sentence, Answer }
 
@@ -21,7 +21,13 @@ public class Dialogue
 		public string sentence;
 
 		[ShowIf("type", TypeOfLine.Answer)]
+		public string question;
+		[ShowIf("type", TypeOfLine.Answer)]
 		public string[] correctAnswers;
+		[ShowIf("type", TypeOfLine.Answer)]
+		public TriggerBase correctTrigger;
+		[ShowIf("type", TypeOfLine.Answer)]
+		public TriggerBase wrongTrigger;
 	}
 
 	public Line[] lines;

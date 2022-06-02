@@ -8,31 +8,26 @@ public class DialogueManager : MonoBehaviour
 {
 	public GameObject normalCanvas;
 	public GameObject dialogueCanvas;
-
-	public TMP_Text speakerText;
-	public TMP_Text dialogueText;
 	
 	UIManager UIManager;
+	PlayerMovement playerMovement;
 
 	bool inDialogue;
+	Dialogue.Line currentLine;
 
 	//public Animator animator;
 
-	private Queue<string> sentences;
+	private List<Dialogue.Line> lines = new List<Dialogue.Line>();
 
 	private void Awake()
 	{
 		UIManager = FindObjectOfType<UIManager>();
-	}
-
-	void Start()
-	{
-		sentences = new Queue<string>();
+		playerMovement = FindObjectOfType<PlayerMovement>();
 	}
 
 	private void Update()
 	{
-		if(inDialogue && Input.GetMouseButtonDown(0)) 
+		if(inDialogue && currentLine.type == Dialogue.Line.TypeOfLine.Sentence && Input.GetMouseButtonDown(0)) 
 		{
 			DisplayNextSentence();
 		}
@@ -42,17 +37,19 @@ public class DialogueManager : MonoBehaviour
 	{
 		inDialogue = true;
 
+		playerMovement.LoseInputs();
+
 		UIManager.DisplayOnlyCanvas(dialogueCanvas);
 
 		//animator.SetBool("IsOpen", true);
 
-		speakerText.text = dialogue.name;
+		UIManager.UpdateSpeakerName(dialogue.name);
 
-		sentences.Clear();
+		lines.Clear();
 
 		foreach (Dialogue.Line line in dialogue.lines)
 		{
-			sentences.Enqueue(line.sentence);
+			lines.Add(line);
 		}
 
 		DisplayNextSentence();
@@ -60,25 +57,26 @@ public class DialogueManager : MonoBehaviour
 
 	public void DisplayNextSentence()
 	{
-		if (sentences.Count == 0)
+		if (lines.Count == 0)
 		{
 			EndDialogue();
 			return;
 		}
 
-		string sentence = sentences.Dequeue();
-		StopAllCoroutines();
-		StartCoroutine(TypeSentence(sentence));
-	}
+		currentLine = lines[0];
 
-	IEnumerator TypeSentence(string sentence)
-	{
-		dialogueText.text = "";
-		foreach (char letter in sentence.ToCharArray())
+		if (currentLine.type == Dialogue.Line.TypeOfLine.Sentence) 
 		{
-			dialogueText.text += letter;
-			yield return null;
+			UIManager.DisplaySentence(currentLine.sentence);
 		}
+
+		else if (currentLine.type == Dialogue.Line.TypeOfLine.Answer)
+		{
+			UIManager.DisplayAnswer(currentLine.question);
+		}
+
+		lines.RemoveAt(0);
+		UIManager.StopCoroutine(UIManager.TypeSentence(""));
 	}
 
 	void EndDialogue()
@@ -88,6 +86,31 @@ public class DialogueManager : MonoBehaviour
 		UIManager.DisplayOnlyCanvas(normalCanvas);
 
 		inDialogue = false;
+
+		Cursor.lockState = CursorLockMode.Locked;
+		Cursor.visible = false;
+
+		playerMovement.RetrieveInputs();
 	}
 
+	public void CheckAnswer(string answer) 
+	{
+		string formatedString = FormatString(answer);
+		if (System.Array.Exists(currentLine.correctAnswers, element => element == formatedString))
+		{
+			currentLine.correctTrigger.Trigger();
+		}
+		else 
+		{
+			currentLine.wrongTrigger.Trigger();
+		}
+	}
+
+	string FormatString(string stringToFormat) 
+	{
+		string newString = stringToFormat.Replace(" ", "");
+		newString = newString.ToLower();
+
+		return newString;
+	}
 }
