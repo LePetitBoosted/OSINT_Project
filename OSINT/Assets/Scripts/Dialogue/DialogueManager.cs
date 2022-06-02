@@ -75,6 +75,17 @@ public class DialogueManager : MonoBehaviour
 			UIManager.DisplayAnswer(currentLine.question);
 		}
 
+		else if (currentLine.type == Dialogue.Line.TypeOfLine.Trigger)
+		{
+			foreach (TriggerBase trigger in currentLine.triggers) 
+			{
+				trigger.Trigger();
+			}
+			lines.RemoveAt(0);
+			DisplayNextSentence();
+			return;
+		}
+
 		lines.RemoveAt(0);
 		UIManager.StopCoroutine(UIManager.TypeSentence(""));
 	}

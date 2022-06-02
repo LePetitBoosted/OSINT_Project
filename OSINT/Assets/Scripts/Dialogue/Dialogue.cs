@@ -9,9 +9,9 @@ public class Dialogue
 	public string name;
 
 	[System.Serializable]
-	public class Line 
+	public class Line
 	{
-		public enum TypeOfLine { Sentence, Answer }
+		public enum TypeOfLine { Sentence, Answer, Trigger }
 
 		[EnumToggleButtons]
 		public TypeOfLine type;
@@ -28,6 +28,9 @@ public class Dialogue
 		public TriggerBase correctTrigger;
 		[ShowIf("type", TypeOfLine.Answer)]
 		public TriggerBase wrongTrigger;
+
+		[ShowIf("type", TypeOfLine.Trigger)]
+		public TriggerBase[] triggers;
 	}
 
 	public Line[] lines;
