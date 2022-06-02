@@ -28,4 +28,9 @@ public class UIManager : MonoBehaviour
 
         interactionText.SetActive(true);
     }
+
+    public void UndisplayInteractionText() 
+    {
+        interactionText.SetActive(false);
+    }
 }

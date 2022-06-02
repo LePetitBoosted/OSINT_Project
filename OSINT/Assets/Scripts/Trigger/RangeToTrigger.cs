@@ -29,21 +29,25 @@ public class RangeToTrigger : MonoBehaviour
                 triggered = true;
                 trigger.Trigger();
             }
-            else if(!UIManager.interactionText.activeInHierarchy) 
+            else 
             {
-                UIManager.DisplayInteractionText();
+                if (!UIManager.interactionText.activeInHierarchy) UIManager.DisplayInteractionText();
+
                 if (Input.GetButtonDown("Interact"))
                 {
-                    Debug.Log("wesh");
                     triggered = true;
+
+                    UIManager.UndisplayInteractionText();
+
                     trigger.Trigger();
                 }
             }
        }
 
-       if(!triggerOnce && triggered && Vector3.Distance(transform.position, transformToCheck.position) > range) 
+       if (Vector3.Distance(transform.position, transformToCheck.position) > range) 
        {
-            triggered = false;
+            if (UIManager.interactionText.activeInHierarchy) UIManager.UndisplayInteractionText();
+            if (triggered && !triggerOnce) triggered = false;
        }
     }
 }
